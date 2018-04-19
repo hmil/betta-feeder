@@ -1,8 +1,8 @@
 DIY Feeder for my Betta Fish
 ============================
 
-![Feeder picture](https://raw.githubusercontent.com/hmil/betta-feeder/master/resources/pic01.jpg | width=100)
-![CAD model rendering](https://raw.githubusercontent.com/hmil/betta-feeder/master/resources/cad.png | width=100)
+![Feeder picture](https://raw.githubusercontent.com/hmil/betta-feeder/master/resources/pic01.jpg)
+![CAD model rendering](https://raw.githubusercontent.com/hmil/betta-feeder/master/resources/cad.png)
 
 ## Features
 
@@ -36,11 +36,12 @@ Be sure to print with the surfaces in contact with the rotor at the bottom. This
 
 Ready-to-print STL files are available under `hardware/`. Tested on a prusa i3 mk2; It took a little bit of grinding to get it all to fit.
 
-## Known issues
+## Known issues
 
 - Programming the schedule requires to change the software code and flash the arduino with the new program.
 - The schedule is relative to the boot time of the arduino. In case of AC outage, there is a risk for feeding too much or too little.
 - There is not enough play between the rotor and the carter and it requires quite a bit of grinding to get it to slide well.
 - The top part is designed based on an unusual servomotor format. (I got a larger servo to fit using hot glue though).
+- The reservoir is too narrow and is a real pain to refill.
 
 **If you fix any of these issues, make sure to contribute your changes back!**
