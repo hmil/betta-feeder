@@ -3,8 +3,7 @@ DIY IoT Feeder for my Betta Fish
 
 ![Feeder picture](https://raw.githubusercontent.com/hmil/betta-feeder/master/resources/pic01.jpg)
 ![CAD model rendering](https://raw.githubusercontent.com/hmil/betta-feeder/master/resources/cad.png)
-![Web control interface](https://raw.githubusercontent.com/hmil/betta-feeder/master/resources/web-interface.png)
-
+<img src="https://raw.githubusercontent.com/hmil/betta-feeder/master/resources/web-interface.png" alt="web control interface" width="500">
 
 ## Features
 
@@ -43,15 +42,15 @@ Be sure to print with the surfaces in contact with the rotor at the bottom. This
 Ready-to-print STL files are available under `hardware/`. Tested on a prusa i3 mk2; It took a little bit of grinding to get it all to fit.
 
 
-## Software
+## Software
 
-### Arduino
+### Arduino
 
 There is an arduino sketch providing basic functionality. It does have the following issues:
 - Programming the schedule requires to change the software code and flash the arduino with the new program.
 - The schedule is relative to the boot time of the arduino. In case of AC outage, there is a risk for feeding too much or too little.
 
-### NodeMCU
+### NodeMCU
 
 A NodeMCU project is available. Connect the servomotor to GPIO 12. Be careful that the board runs at 3.3v whereas the servo runs at 5v (but you don't need a logic converter for the control signal... just beware not to fry the board with 5v). Make a copy of the `.example` files without the `.example` extension and replace the variables according to your environment.
 
