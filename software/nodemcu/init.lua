@@ -51,7 +51,7 @@ end
 
 
 feedcron = cron.schedule(cronline, dispense)
-telemetrycron = cron.schedule("* * * * *", telemetry)
+telemetrycron = cron.schedule("0,10,20,30,40,50 * * * *", telemetry)
 
 
 writecron = function(line)
@@ -85,8 +85,10 @@ m = mqtt.Client("clientid", 60, MQTT_USER, MQTT_PASSWORD)
 -- to topic "/lwt" if client don't send keepalive packet
 m:lwt("/lwt", "offline", 0, 0)
 
-m:on("connect", function(client) print ("connected") end)
-m:on("offline", function(client) print ("offline") end)
+m:on("offline", function(client)
+    print ("offline")
+    tmr.create():alarm(10 * 1000, tmr.ALARM_SINGLE, connect)
+end)
 
 -- on publish message receive event
 m:on("message", function(client, topic, data) 
@@ -125,10 +127,8 @@ connect = function()
         client:publish("/gaston/telemetry", '{"event":"boot","epoch":' .. sec .. '}', 0, 0, function(client) print("sent") end)
     end,
     function(client, reason)
-        print("failed reason: " .. reason)
-        if connectTries < 5 then
-            connect()
-        end
+        print('Mqtt failed, reason: ' .. reason)
+        tmr.create():alarm(10 * 1000, tmr.ALARM_SINGLE, connect)
     end)
 end
 
