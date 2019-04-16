@@ -6,19 +6,19 @@ LUA_FILES := $(wildcard *.lua)
 
 .PHONY: clean
 clean:
-	@python $(NODEMCU-COMMAND) file format
+	$(NODEMCU-COMMAND) file format
 
 .PHONY: list
 list:
-	@python $(NODEMCU-COMMAND) file list
+	$(NODEMCU-COMMAND) file list
 
 .PHONY: restart
 restart:
-	@python $(NODEMCU-COMMAND) node restart
+	$(NODEMCU-COMMAND) node restart
 
 .PHONY: upload
 upload: $(LUA_FILES)
-	@python $(NODEMCU-COMMAND) upload $(foreach f, $^, $(f))
+	$(NODEMCU-COMMAND) upload $(foreach f, $^, $(f))
 
 .PHONY: flash
 flash:

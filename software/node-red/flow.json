@@ -1,0 +1,582 @@
+[
+    {
+        "id": "de1bfaf6.f41358",
+        "type": "tab",
+        "label": "gaston",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "492e9b3c.ec3064",
+        "type": "mqtt in",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "topic": "/gaston/status",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "c2bfdcaa.a1bc9",
+        "x": 70,
+        "y": 320,
+        "wires": [
+            [
+                "aa91e434.6fedd8"
+            ]
+        ]
+    },
+    {
+        "id": "8576294d.ef6f18",
+        "type": "ui_button",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "group": "fc3f4425.206578",
+        "order": 4,
+        "width": "2",
+        "height": "1",
+        "passthru": false,
+        "label": "Feed",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "fa-cutlery",
+        "payload": "{\"dispense\":true}",
+        "payloadType": "json",
+        "topic": "",
+        "x": 1430,
+        "y": 240,
+        "wires": [
+            [
+                "2f48faca.77fdb6"
+            ]
+        ]
+    },
+    {
+        "id": "2f48faca.77fdb6",
+        "type": "mqtt out",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "topic": "/gaston/commands",
+        "qos": "",
+        "retain": "",
+        "broker": "c2bfdcaa.a1bc9",
+        "x": 1650,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "c7b96dc3.c5253",
+        "type": "ui_numeric",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "label": "doses",
+        "tooltip": "",
+        "group": "fc3f4425.206578",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "doses",
+        "format": "{{value}}",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "x": 1250,
+        "y": 380,
+        "wires": [
+            [
+                "fc7a5240.45f63",
+                "a4c50b64.915358"
+            ]
+        ]
+    },
+    {
+        "id": "e7c633d6.2d641",
+        "type": "function",
+        "z": "de1bfaf6.f41358",
+        "name": "doses",
+        "func": "\nif (msg.payload.doses != null) {\n    return {\n        payload: msg.payload.doses\n    };\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1130,
+        "y": 380,
+        "wires": [
+            [
+                "c7b96dc3.c5253"
+            ]
+        ]
+    },
+    {
+        "id": "928ab2a0.44f63",
+        "type": "function",
+        "z": "de1bfaf6.f41358",
+        "name": "cron",
+        "func": "\nif (msg.payload.cron != null) {\n    return {\n        payload: msg.payload.cron\n    };\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1130,
+        "y": 320,
+        "wires": [
+            [
+                "e8d8881f.7cb738"
+            ]
+        ]
+    },
+    {
+        "id": "e8d8881f.7cb738",
+        "type": "ui_text_input",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "label": "cron",
+        "tooltip": "",
+        "group": "fc3f4425.206578",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "cron",
+        "x": 1250,
+        "y": 320,
+        "wires": [
+            [
+                "fc7a5240.45f63",
+                "a4c50b64.915358"
+            ]
+        ]
+    },
+    {
+        "id": "5db19932.49b318",
+        "type": "ui_button",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "group": "fc3f4425.206578",
+        "order": 3,
+        "width": "4",
+        "height": "1",
+        "passthru": false,
+        "label": "Save config",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "fa-download",
+        "payload": "true",
+        "payloadType": "bool",
+        "topic": "submit",
+        "x": 1730,
+        "y": 400,
+        "wires": [
+            [
+                "2102c201.1e83de"
+            ]
+        ]
+    },
+    {
+        "id": "fc7a5240.45f63",
+        "type": "function",
+        "z": "de1bfaf6.f41358",
+        "name": "acc",
+        "func": "\nconst config = context.config || ( context.config = {\n    cron: null,\n    doses: null\n});\n\nif (msg.topic === 'cron') {\n    config.cron = msg.payload;\n} else if (msg.topic === 'doses') {\n    config.doses = msg.payload;\n} else if (msg.topic === 'submit') {\n    if (config.cron != null && config.doses != null) {\n        return {\n            payload: { config }\n        };\n    } else {\n        return { payload: {} };\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1430,
+        "y": 320,
+        "wires": [
+            [
+                "2f48faca.77fdb6",
+                "c6d27fa0.68e73"
+            ]
+        ]
+    },
+    {
+        "id": "aaf28ed5.a9a45",
+        "type": "file in",
+        "z": "de1bfaf6.f41358",
+        "name": "read config",
+        "filename": "/data/db/gaston.config",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "x": 810,
+        "y": 320,
+        "wires": [
+            [
+                "146f6315.19042d"
+            ]
+        ]
+    },
+    {
+        "id": "fba9b575.062658",
+        "type": "file",
+        "z": "de1bfaf6.f41358",
+        "name": "write config",
+        "filename": "/data/db/gaston.config",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 630,
+        "y": 320,
+        "wires": [
+            [
+                "aaf28ed5.a9a45"
+            ]
+        ]
+    },
+    {
+        "id": "aa91e434.6fedd8",
+        "type": "function",
+        "z": "de1bfaf6.f41358",
+        "name": "prepare config",
+        "func": "\nif (msg.payload.config) {\n    return { payload: msg.payload.config };\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300,
+        "y": 320,
+        "wires": [
+            [
+                "1170e712.7ad769"
+            ]
+        ]
+    },
+    {
+        "id": "1170e712.7ad769",
+        "type": "json",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "property": "payload",
+        "action": "str",
+        "pretty": false,
+        "x": 470,
+        "y": 320,
+        "wires": [
+            [
+                "fba9b575.062658"
+            ]
+        ]
+    },
+    {
+        "id": "146f6315.19042d",
+        "type": "json",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 970,
+        "y": 320,
+        "wires": [
+            [
+                "928ab2a0.44f63",
+                "e7c633d6.2d641",
+                "36081779.885678"
+            ]
+        ]
+    },
+    {
+        "id": "c6d27fa0.68e73",
+        "type": "function",
+        "z": "de1bfaf6.f41358",
+        "name": "disable",
+        "func": "\nreturn { enabled: false };",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1540,
+        "y": 400,
+        "wires": [
+            [
+                "5db19932.49b318"
+            ]
+        ]
+    },
+    {
+        "id": "a4c50b64.915358",
+        "type": "function",
+        "z": "de1bfaf6.f41358",
+        "name": "enable",
+        "func": "\nreturn { enabled: true };",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1530,
+        "y": 460,
+        "wires": [
+            [
+                "5db19932.49b318"
+            ]
+        ]
+    },
+    {
+        "id": "c10e3501.aefc38",
+        "type": "inject",
+        "z": "de1bfaf6.f41358",
+        "name": "init",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 650,
+        "y": 280,
+        "wires": [
+            [
+                "aaf28ed5.a9a45"
+            ]
+        ]
+    },
+    {
+        "id": "2102c201.1e83de",
+        "type": "link out",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "links": [
+            "5a09af04.36045"
+        ],
+        "x": 1855,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "5a09af04.36045",
+        "type": "link in",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "links": [
+            "2102c201.1e83de"
+        ],
+        "x": 1275,
+        "y": 280,
+        "wires": [
+            [
+                "fc7a5240.45f63"
+            ]
+        ]
+    },
+    {
+        "id": "36081779.885678",
+        "type": "debug",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 1360,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "3ea844b1.8fd62c",
+        "type": "sqlite",
+        "z": "de1bfaf6.f41358",
+        "mydb": "edcd789b.198de8",
+        "sqlquery": "fixed",
+        "sql": "CREATE TABLE IF NOT EXISTS events (\n    id INTEGER PRIMARY KEY,\n    epoch INTEGER NOT NULL,\n    event VARCHAR NOT NULL\n)",
+        "name": "CREATE TABLE events",
+        "x": 280,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dee3771a.790d38",
+        "type": "inject",
+        "z": "de1bfaf6.f41358",
+        "name": "init",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 60,
+        "y": 120,
+        "wires": [
+            [
+                "3ea844b1.8fd62c"
+            ]
+        ]
+    },
+    {
+        "id": "523065ba.b133ac",
+        "type": "function",
+        "z": "de1bfaf6.f41358",
+        "name": "prepare insert events",
+        "func": "\nreturn {\n    params: {\n        '$event': msg.payload.event,\n        '$epoch': msg.payload.epoch\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 440,
+        "wires": [
+            [
+                "8fed592d.24f828",
+                "decce757.fe8ca8"
+            ]
+        ]
+    },
+    {
+        "id": "db23d05a.60f78",
+        "type": "mqtt in",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "topic": "/gaston/events",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "c2bfdcaa.a1bc9",
+        "x": 80,
+        "y": 440,
+        "wires": [
+            [
+                "523065ba.b133ac"
+            ]
+        ]
+    },
+    {
+        "id": "8fed592d.24f828",
+        "type": "sqlite",
+        "z": "de1bfaf6.f41358",
+        "mydb": "edcd789b.198de8",
+        "sqlquery": "prepared",
+        "sql": "INSERT INTO events VALUES (NULL, $epoch, $event)",
+        "name": "INSERT INTO events",
+        "x": 670,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b4ef61dc.fc91f",
+        "type": "sqlite",
+        "z": "de1bfaf6.f41358",
+        "mydb": "edcd789b.198de8",
+        "sqlquery": "fixed",
+        "sql": "SELECT * FROM events;",
+        "name": "SELECT FROM events",
+        "x": 580,
+        "y": 620,
+        "wires": [
+            [
+                "95e8f4fc.614e48"
+            ]
+        ]
+    },
+    {
+        "id": "95e8f4fc.614e48",
+        "type": "json",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 770,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "de2c564c.f3fc58",
+        "type": "inject",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 340,
+        "y": 620,
+        "wires": [
+            [
+                "b4ef61dc.fc91f"
+            ]
+        ]
+    },
+    {
+        "id": "decce757.fe8ca8",
+        "type": "debug",
+        "z": "de1bfaf6.f41358",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 620,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "c2bfdcaa.a1bc9",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "broker",
+        "broker": "YOUR_BROKER",
+        "port": "9010",
+        "tls": "65ae33.64ef41cc",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "fc3f4425.206578",
+        "type": "ui_group",
+        "z": "",
+        "name": "Gaston",
+        "tab": "3f42d05f.bf611",
+        "order": 5,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "edcd789b.198de8",
+        "type": "sqlitedb",
+        "z": "",
+        "db": "/data/db/gaston2.sqlite",
+        "mode": "RWC"
+    },
+    {
+        "id": "65ae33.64ef41cc",
+        "type": "tls-config",
+        "z": "",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "YOUR_BROKER",
+        "verifyservercert": true
+    },
+    {
+        "id": "3f42d05f.bf611",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Home",
+        "icon": "wi-wu-sunny",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    }
+]
