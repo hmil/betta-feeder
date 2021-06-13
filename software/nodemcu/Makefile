@@ -1,6 +1,6 @@
 include env.make
 
-NODEMCU-COMMAND=$(NODEMCU-UPLOADER) -b $(SPEED) --start_baud $(SPEED) -p $(PORT)
+NODEMCU-COMMAND=$(NODEMCU-UPLOADER) -b $(SPEED) -p $(PORT)
 
 LUA_FILES := $(wildcard *.lua)
 

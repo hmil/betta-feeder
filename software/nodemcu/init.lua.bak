@@ -6,9 +6,9 @@
 
 dofile('env.lua')
 
-local servoForward = 50
-local servoStop = 0
-local oneDoseTime = 500
+local servoPosTake = 75
+local servoPosRelease = 100
+local servoPosNeutral = 120
 
 CONFIG_FILE="config.json"
 SERVO_GPIO=6
@@ -78,19 +78,44 @@ writeConfig = function()
     end
 end
 
+dispenseOne = function(cb)
+    pwm.setduty(SERVO_GPIO, servoPosTake)
+    tmr.create():alarm(1000, tmr.ALARM_SINGLE, function()
+        pwm.setduty(SERVO_GPIO, servoPosRelease)
+        tmr.create():alarm(1000, tmr.ALARM_SINGLE, function()
+            cb()
+        end)
+    end)
+end
+
+dispenseStop = function()
+    pwm.setduty(SERVO_GPIO, servoPosNeutral)
+    tmr.create():alarm(1000, tmr.ALARM_SINGLE, function()
+        pwm.close(SERVO_GPIO)
+        gpio.write(SERVO_GPIO, gpio.LOW)
+    end)
+end
+
 dispense = function()
     print('Dispensing...')
     sendEvent('dispense')
 
-    pwm.setup(SERVO_GPIO, 50, servoStop)
+    pwm.setup(SERVO_GPIO, 50, servoPosNeutral)
     pwm.start(SERVO_GPIO)
-    pwm.setduty(SERVO_GPIO, servoForward)
-
-    tmr.create():alarm(oneDoseTime * config.doses, tmr.ALARM_SINGLE, function()
-        pwm.setduty(SERVO_GPIO, servoStop)
-        pwm.close(SERVO_GPIO)
-        print('Done dispensing.')
-    end)
+    
+    local remainingDoses = config.doses
+    dispenseRec = function()
+        dispenseOne(function()
+            remainingDoses = remainingDoses - 1
+            if remainingDoses > 0 then
+                dispenseRec()
+            else
+                dispenseStop()
+                print('Done dispensing.')
+            end
+        end)
+    end
+    dispenseRec()
 end
 
 connectTries = 0
